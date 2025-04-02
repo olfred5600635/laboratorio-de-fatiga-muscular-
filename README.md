@@ -150,7 +150,7 @@ Las señales en la vida real son infinitas o muy largas, pero los algoritmos (co
 - Desventajas: Pierde bastante resolución espectral.
 - Fórmula:
   
-         w(n)=0.42−0.5cos( N−12πn)+0.08cos( N−14πn )
+         w(n)=0.42−0.5cos( 2πn/N-1)+0.08cos(4πn/N-1)
   
 -Cuándo usarla: Para señales donde la supresión de ruido y la suavización son más importantes que la resolución.
 

@@ -154,4 +154,5 @@ Las señales en la vida real son infinitas o muy largas, pero los algoritmos (co
   
 -Cuándo usarla: Para señales donde la supresión de ruido y la suavización son más importantes que la resolución.
 
-[![imagen-2025-04-02-173252301.png](https://i.postimg.cc/MKFqSGsZ/imagen-2025-04-02-173252301.png)](https://postimg.cc/fJm67Mn1)
+[![imagen-2025-04-02-173705298.png](https://i.postimg.cc/rFtYDFVw/imagen-2025-04-02-173705298.png)](https://postimg.cc/WhT7KVqB)
+

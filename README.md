@@ -65,6 +65,8 @@ Fuente de alimentación.
 Un DAQ (Sistema de Adquisición de Datos) es un dispositivo o conjunto de dispositivos que capturan señales del mundo real (como temperatura, voltaje,
 fuerza o señales biológicas como EMG) y las convierten en datos digitales que pueden ser procesados por una computadora.
 
+[![imagen-2025-04-02-173138606.png](https://i.postimg.cc/x8gjHyyL/imagen-2025-04-02-173138606.png)](https://postimg.cc/9wRjH9kf)
+
 1) ## Componentes principales de un DAQ
 
 -Electrodos EMG → Capturan señales eléctricas de los músculos.
@@ -107,7 +109,9 @@ Las señales en la vida real son infinitas o muy largas, pero los algoritmos (co
 - Ventajas: Simple y rápida.
 - Desventajas: Puede generar fugas espectrales porque introduce discontinuidades en los bordes.
 - Fórmula:
+  
             w(n) = 1,0 ≤ n ≤ N−1
+  
 -Cuándo usarla: Si la señal ya tiene transiciones suaves o si no te preocupa la fuga espectral.
 
 2. Ventana de Bartlett (Triangular)
@@ -115,7 +119,9 @@ Las señales en la vida real son infinitas o muy largas, pero los algoritmos (co
 - Ventajas: Menos fuga espectral, pero con menor resolución que la rectangular.
 - Desventajas: Aún deja pasar algunos efectos no deseados en el espectro.
 -Fórmula:
+
           w(n)= 1-(2∣n-(N-1)/2∣/N-1
+  
 -Cuándo usarla: Cuando se busca una opción intermedia entre la rectangular y las más suavizadas.
 
 3. Ventana de Hanning
@@ -123,7 +129,9 @@ Las señales en la vida real son infinitas o muy largas, pero los algoritmos (co
 - Ventajas: Reduce significativamente la fuga espectral.
 -Desventajas: Pierde un poco de resolución espectral respecto a la rectangular.
 - Fórmula:
+  
          w(n)=0.5(1−cos(2πn/N-1))
+  
 -Cuándo usarla: Para análisis de frecuencia donde es importante reducir la fuga espectral.
 
 4. Ventana de Hamming
@@ -131,7 +139,9 @@ Las señales en la vida real son infinitas o muy largas, pero los algoritmos (co
 - Ventajas: Menos fuga espectral que Hanning y buena resolución espectral.
 - Desventajas: No es tan eficiente para algunas señales con cambios abruptos.
 - Fórmula:
+  
          w(n)=0.54−0.46cos( 2πn/N-1)
+  
 -Cuándo usarla: Para señales donde queremos un equilibrio entre reducción de fuga y resolución espectral.
 
 5. Ventana de Blackman
@@ -139,5 +149,9 @@ Las señales en la vida real son infinitas o muy largas, pero los algoritmos (co
 - Ventajas: Reduce mucho la fuga espectral.
 - Desventajas: Pierde bastante resolución espectral.
 - Fórmula:
+  
          w(n)=0.42−0.5cos( N−12πn)+0.08cos( N−14πn )
+  
 -Cuándo usarla: Para señales donde la supresión de ruido y la suavización son más importantes que la resolución.
+
+[![imagen-2025-04-02-173252301.png](https://i.postimg.cc/MKFqSGsZ/imagen-2025-04-02-173252301.png)](https://postimg.cc/fJm67Mn1)

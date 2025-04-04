@@ -211,7 +211,54 @@ def filtrar_senal(self):
         self.ax.set_ylabel("Amplitud")
         self.ax.legend()
         self.canvas.draw()
+        
+Donde se arroja la siguiente imagen:
 
+![](https://github.com/olfred5600635/laboratorio-de-fatiga-muscular-/blob/main/Se%C3%B1alFil.png)
 
 # 3) Aventanamiento de la señal
+
+ def mostrar_hanning(self):
+    if self.senal_filtrada is not None:
+        ventana_hanning = signal.windows.hann(len(self.senal_filtrada))
+
+        hanning_pulsos = self.senal_filtrada * ventana_hanning  
+
+        self.ax.clear()
+        self.ax.plot(self.senal_filtrada, color='blue', alpha=0.5, label="Señal Filtrada")  
+        self.ax.plot(hanning_pulsos, color='orange', linestyle='--', label="Hanning ventanas")  
+        self.ax.set_title("Datos con Ventana de Hanning ")
+        self.ax.set_xlabel("Tiempo")
+        self.ax.set_ylabel("Valor")
+        self.ax.legend()
+        self.canvas.draw()
+
+ La ventana de Hanning es una función matemática que suaviza los extremos de la señal, evitando cambios bruscos que podrían distorsionar el análisis de frecuencias. En el código se usa la función signal.windows.hann para generar la ventana, y luego se grafica el resultado junto con la señal original para ver cómo se atenúan esos bordes. Este paso es fundamental antes de aplicar la transformada de Fourier, ya que mejora la precisión del espectro de frecuencias obtenido. donde se arroja la siguiente grafica:
+
+ ![](https://github.com/olfred5600635/laboratorio-de-fatiga-muscular-/blob/main/Hanning.png)
+
+## Analisis Espectral 
+
+def espectro_fft(self):
+    if self.senal_filtrada is not None:
+        N = len(self.senal_filtrada)
+        fft_senal = np.fft.fft(self.senal_filtrada)
+        fft_senal = np.abs(fft_senal[:N // 2])  # Solo la mitad positiva
+        f = np.fft.fftfreq(N, d=1/self.fs)[:N // 2]
+
+        plt.figure("Espectro de Frecuencia (FFT)")
+        plt.semilogy(f, fft_senal, color='purple')
+        plt.title("Espectro de Frecuencia de la Señal Filtrada")
+        plt.xlabel("Frecuencia (Hz)")
+        plt.ylabel("Magnitud (escala log)")
+        plt.grid(True)
+        plt.show()
+        
+Este fragmento de código realiza el análisis espectral de la señal filtrada utilizando la Transformada Rápida de Fourier (FFT). Primero, se calcula la FFT de la señal filtrada y se obtiene la magnitud del espectro. Luego, se calcula el vector de frecuencias correspondiente y se grafica el espectro en escala logarítmica (usando plt.semilogy) para resaltar las diferencias en magnitud de las componentes de frecuencia. Esto nos permite identificar las frecuencias dominantes en la señal de manera clara y detallada.
+
+Lo cual nos arroja lo siguiente :
+![](https://github.com/olfred5600635/laboratorio-de-fatiga-muscular-/blob/main/Espectral.png)
+
+## Resultados y Analisis
+
    

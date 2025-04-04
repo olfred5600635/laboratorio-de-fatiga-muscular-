@@ -215,7 +215,9 @@ la señal EMG, eliminando ruidos de alta frecuencia y dejando solo lo que es út
 
 3) Aquí se aplica el filtro a la señal EMG real:
 
-signal.filtfilt(...) aplica el filtro en dos direcciones (adelante y atrás) para que la señal no se deforme.
+signal.filtfilt(...) Esto se hace para que la señal no se retrase ni se deforme. Si solo aplicas un filtro una vez, puede que se mueva un poco la señal o cambie la forma de algunos picos.
 
-self.datos es la señal cruda, y senal_filtrada es la versión limpia y sin ruido.
+self.datos es la señal cruda, y senal_filtrada es la versión limpia y sin ruido , Este paso es donde realmente se limpia la señal, eliminando lo que no sirve para el análisis.
+
+# 3) Aventanamiento de la señal
    

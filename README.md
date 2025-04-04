@@ -6,19 +6,19 @@ El experimento tiene como objetivo registrar y analizar señales electromiográf
 
 ## Materiales y Equipos del Laboratorio:
 
-Computador con acceso a internet.
+**1.** Computador con acceso a internet.
 
-Software de análisis de señales en Python.
+**2.** Software de análisis de señales en Python.
 
 ## Materiales y Equipos del Estudiante: 
 
-Electrodos de superficie para captura de señales EMG (3 unidades).
+- Electrodos de superficie para captura de señales EMG (3 unidades).
 
-Sistema de adquisición de datos (DAQ o similar).
+- Sistema de adquisición de datos (DAQ o similar).
 
-Gel conductor.
+- Gel conductor.
 
-Fuente de alimentación.
+- Fuente de alimentación.
 
 ## Objetivos:
 
@@ -32,33 +32,33 @@ Fuente de alimentación.
 
 ## Estructura del Experimento:
 
-1) ## Preparación del Sujeto:
+## Preparación del Sujeto:
 
-1)Colocación de electrodos con gel conductor en el músculo a analizar.
+1) Colocación de electrodos con gel conductor en el músculo a analizar.
 
-2)Configuración del sistema de adquisición de datos (DAQ y software).
+2) Configuración del sistema de adquisición de datos (DAQ y software).
 
-3)Definición de la frecuencia de muestreo adecuada.
+3) Definición de la frecuencia de muestreo adecuada.
 
-2) ## Adquisición de la Señal EMG:
+ - ## Adquisición de la Señal EMG: 
 
-1)Solicitar al sujeto realizar una contracción muscular sostenida hasta la fatiga.
+1) Solicitar al sujeto realizar una contracción muscular sostenida hasta la fatiga.
 
-2)Registrar la señal EMG en tiempo real.
+2) Registrar la señal EMG en tiempo real.
 
-3) ## Procesamiento de la Señal:
+- ## Procesamiento de la Señal:
 
-1)Aplicación de filtros pasa altas y pasa bajas para eliminar ruido.
+1) Aplicación de filtros pasa altas y pasa bajas para eliminar ruido.
 
-2)Segmentación de la señal en ventanas de tiempo (ventaneo).
+2) Segmentación de la señal en ventanas de tiempo (ventaneo).
 
-3)Aplicación de la Transformada de Fourier (FFT) para análisis espectral.
+3) Aplicación de la Transformada de Fourier (FFT) para análisis espectral.
 
-4) ## Análisis de Fatiga Muscular:
+- ## Análisis de Fatiga Muscular:
 
-1)Evaluación del cambio en la frecuencia mediana.
+1) Evaluación del cambio en la frecuencia mediana.
 
-2)Aplicación de pruebas de hipótesis para determinar si la fatiga es significativa.
+2) Aplicación de pruebas de hipótesis para determinar si la fatiga es significativa.
 
 ## ¿Qué es un DAQ (Sistema de Adquisición de Datos)?
 
@@ -69,33 +69,32 @@ fuerza o señales biológicas como EMG) y las convierten en datos digitales que 
 
 1) ## Componentes principales de un DAQ
 
--Electrodos EMG → Capturan señales eléctricas de los músculos.
+- Electrodos EMG → Capturan señales eléctricas de los músculos.
 
--Termopares → Miden temperatura.
+- Termopares → Miden temperatura.
 
--Acelerómetros → Miden vibraciones o movimiento.
+- Acelerómetros → Miden vibraciones o movimiento.
 
 2) ## Circuitos de acondicionamiento de señal
 
- Las señales capturadas suelen ser muy débiles o ruidosas,
- por lo que se deben amplificar y filtrar antes de ser digitalizadas,
+ Las señales capturadas suelen ser muy débiles o ruidosas, por lo que se deben amplificar y filtrar antes de ser digitalizadas,
  como ejemplo se pueden usar estas tecnicas.
 
--Amplificadores → Aumentan la intensidad de la señal.
+- Amplificadores → Aumentan la intensidad de la señal.
 
--Filtros pasa-altas / pasa-bajas → Eliminan ruidos no deseados.
+- Filtros pasa-altas / pasa-bajas → Eliminan ruidos no deseados.
 
 3) ## Software de Procesamiento y Análisis
 
 Una vez que la señal llega a la computadora, debe ser procesada. Se pueden usar programas como:
 
--Python (NumPy, SciPy, Matplotlib)
+- Python (NumPy, SciPy, Matplotlib)
 
--MATLAB
+- MATLAB
 
--LabVIEW
+- LabVIEW
 
--Excel (para análisis básico)
+- Excel (para análisis básico)
 
 ## ¿Qué son las funciones de ventana?
 
@@ -112,29 +111,31 @@ Las señales en la vida real son infinitas o muy largas, pero los algoritmos (co
   
             w(n) = 1,0 ≤ n ≤ N−1
   
--Cuándo usarla: Si la señal ya tiene transiciones suaves o si no te preocupa la fuga espectral.
+- Cuándo usarla: Si la señal ya tiene transiciones suaves o si no te preocupa la fuga espectral.
 
 2. Ventana de Bartlett (Triangular)
+   
 - Tiene una forma triangular que reduce un poco la fuga espectral en comparación con la rectangular.
 - Ventajas: Menos fuga espectral, pero con menor resolución que la rectangular.
 - Desventajas: Aún deja pasar algunos efectos no deseados en el espectro.
--Fórmula:
+- Fórmula:
 
           w(n)= 1-(2∣n-(N-1)/2∣/N-1
   
--Cuándo usarla: Cuando se busca una opción intermedia entre la rectangular y las más suavizadas.
+- Cuándo usarla: Cuando se busca una opción intermedia entre la rectangular y las más suavizadas.
 
-3. Ventana de Hanning
+## Ventana de Hanning
+
 - Suaviza la señal aplicando una curva en forma de coseno.
 - Ventajas: Reduce significativamente la fuga espectral.
--Desventajas: Pierde un poco de resolución espectral respecto a la rectangular.
+- Desventajas: Pierde un poco de resolución espectral respecto a la rectangular.
 - Fórmula:
   
          w(n)=0.5(1−cos(2πn/N-1))
   
--Cuándo usarla: Para análisis de frecuencia donde es importante reducir la fuga espectral.
+- Cuándo usarla: Para análisis de frecuencia donde es importante reducir la fuga espectral.
 
-4. Ventana de Hamming
+## Ventana de Hamming
 - Similar a la de Hanning, pero con coeficientes diferentes para mejorar la supresión de las frecuencias laterales.
 - Ventajas: Menos fuga espectral que Hanning y buena resolución espectral.
 - Desventajas: No es tan eficiente para algunas señales con cambios abruptos.
@@ -142,9 +143,10 @@ Las señales en la vida real son infinitas o muy largas, pero los algoritmos (co
   
          w(n)=0.54−0.46cos( 2πn/N-1)
   
--Cuándo usarla: Para señales donde queremos un equilibrio entre reducción de fuga y resolución espectral.
+- Cuándo usarla: Para señales donde queremos un equilibrio entre reducción de fuga y resolución espectral.
 
-5. Ventana de Blackman
+## Ventana de Blackman
+
 - Tiene una forma de coseno más compleja que da una suavización extrema.
 - Ventajas: Reduce mucho la fuga espectral.
 - Desventajas: Pierde bastante resolución espectral.
@@ -152,10 +154,10 @@ Las señales en la vida real son infinitas o muy largas, pero los algoritmos (co
   
          w(n)=0.42−0.5cos( 2πn/N-1)+0.08cos(4πn/N-1)
   
--Cuándo usarla: Para señales donde la supresión de ruido y la suavización son más importantes que la resolución.
+- Cuándo usarla: Para señales donde la supresión de ruido y la suavización son más importantes que la resolución.
 
 [![imagen-2025-04-02-173705298.png](https://i.postimg.cc/rFtYDFVw/imagen-2025-04-02-173705298.png)](https://postimg.cc/WhT7KVqB)
-
+ 
 ## Inicio del Laboratorio 
 
 1) # Adquision de la señal

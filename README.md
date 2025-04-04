@@ -184,6 +184,23 @@ Electrodo de referencia (tierra): en una zona ósea o lejos del músculo, por ej
 
 7) Finaliza la grabación y guarda la señal.
 
+## INTERFAZ
+
+![](https://github.com/olfred5600635/laboratorio-de-fatiga-muscular-/blob/main/Interfaz.png)
+
+
+**Captura:**  corresponde a adquirir y analizar en tiempo real los datos de la señal EMG mediante un sistema de adquisición de datos (DAQ). Cuando se pulsa el botón "Capturar desde DAQ", el código se conecta al dispositivo (usando, por ejemplo, la librería nidaqmx de National Instruments) y obtiene un bloque de datos en tiempo real.
+
+**Cargar señal:** Al presionar este botón, se lee un archivo CSV  y se extrae la señal
+
+**Filtrar señal:** Se aplica un filtro pasa-bajas Butterworth de orden 6 con una frecuencia de corte de 30 Hz. Esto suaviza la señal y elimina el ruido de alta frecuencia. La interfaz muestra ambas señales: la original (en azul con mayor transparencia) y la filtrada (en verde). Esta comparación permite ver claramente cómo el filtro reduce las fluctuaciones indeseadas.
+
+**Ventana Hanning:** La interfaz aplica una ventana de Hanning a la señal filtrada. Esta operación consiste en multiplicar la señal filtrada por una función ventana que atenúa sus extremos. El resultado se grafica en naranja y se superpone a la señal filtrada, permitiendo apreciar el efecto del aventanamiento, que es fundamental para reducir el fenómeno de fugas espectrales en el análisis de frecuencia.
+
+**Espectro FFT:** Al pulsar este botón, se calcula la Transformada Rápida de Fourier (FFT) de la señal filtrada. Se muestra el espectro de frecuencia en una nueva ventana usando una escala logarítmica en el eje y. Esto ayuda a identificar las componentes de frecuencia dominantes, lo cual es esencial para el análisis espectral.
+
+
+
 #  Filtrado de la señal
 
  - **Creación de  el filtro Butterworth:**
@@ -257,6 +274,7 @@ def espectro_fft(self):
 Este fragmento de código realiza el análisis espectral de la señal filtrada utilizando la Transformada Rápida de Fourier (FFT). Primero, se calcula la FFT de la señal filtrada y se obtiene la magnitud del espectro. Luego, se calcula el vector de frecuencias correspondiente y se grafica el espectro en escala logarítmica (usando plt.semilogy) para resaltar las diferencias en magnitud de las componentes de frecuencia. Esto nos permite identificar las frecuencias dominantes en la señal de manera clara y detallada.
 
 Lo cual nos arroja lo siguiente :
+
 ![](https://github.com/olfred5600635/laboratorio-de-fatiga-muscular-/blob/main/Espectral.png)
 
 ## Resultados y Analisis

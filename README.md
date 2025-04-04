@@ -186,8 +186,7 @@ Electrodo de referencia (tierra): en una zona ósea o lejos del músculo, por ej
 
 ## INTERFAZ
 
-![](https://github.com/olfred5600635/laboratorio-de-fatiga-muscular-/blob/main/Interfaz.png)
-
+[![imagen-2025-04-04-172046575.png](https://i.postimg.cc/8kbw37t9/imagen-2025-04-04-172046575.png)](https://postimg.cc/Yjh1LCcz)
 
 **Captura:**  corresponde a adquirir y analizar en tiempo real los datos de la señal EMG mediante un sistema de adquisición de datos (DAQ). Cuando se pulsa el botón "Capturar desde DAQ", el código se conecta al dispositivo (usando, por ejemplo, la librería nidaqmx de National Instruments) y obtiene un bloque de datos en tiempo real.
 
@@ -195,7 +194,11 @@ Electrodo de referencia (tierra): en una zona ósea o lejos del músculo, por ej
 
 **Filtrar señal:** Se aplica un filtro pasa-bajas Butterworth de orden 6 con una frecuencia de corte de 30 Hz. Esto suaviza la señal y elimina el ruido de alta frecuencia. La interfaz muestra ambas señales: la original (en azul con mayor transparencia) y la filtrada (en verde). Esta comparación permite ver claramente cómo el filtro reduce las fluctuaciones indeseadas.
 
-**Ventana Hanning:** La interfaz aplica una ventana de Hanning a la señal filtrada. Esta operación consiste en multiplicar la señal filtrada por una función ventana que atenúa sus extremos. El resultado se grafica en naranja y se superpone a la señal filtrada, permitiendo apreciar el efecto del aventanamiento, que es fundamental para reducir el fenómeno de fugas espectrales en el análisis de frecuencia.
+**Ventana Hanning:** La interfaz aplica una ventana de Hanning a la señal filtrada y genera tambien una ventana hanning a cada pulso de la señal dandonos la media de cada pulso que nos da esa ventana y cada dato que se uso para la media de cada pulso  . Esta operación consiste en multiplicar la señal filtrada por una función ventana que atenúa sus extremos. El resultado se grafica en naranja y se superpone a la señal filtrada, permitiendo apreciar el efecto del aventanamiento, que es fundamental para reducir el fenómeno de fugas espectrales en el análisis de frecuencia.
+
+**Ver las 800 muestras:** Al pulsar este boton nos mostrar las primeras 800 muestras donde se pueden ver los primeros pulsos que dio el sujeto.
+
+**Ver las ultimas  800 muestras:** Al pulsar este boton mostrar las ultimos impuslos que dio el sujeto antes de llegar a la fatiga mostrandonos como cambia los pulsos  
 
 **Espectro FFT:** Al pulsar este botón, se calcula la Transformada Rápida de Fourier (FFT) de la señal filtrada. Se muestra el espectro de frecuencia en una nueva ventana usando una escala logarítmica en el eje y. Esto ayuda a identificar las componentes de frecuencia dominantes, lo cual es esencial para el análisis espectral.
 
@@ -212,7 +215,8 @@ fc / (self.fs / 2) → se llama frecuencia normalizada, y se usa para que el fil
 btype='low' → indica que el filtro es pasa-bajas , donde eliminaremos los  ruidos de alta frecuencia y dejando solo lo que es útil para el análisis muscular.
 
    ## CODIGO
-  
+ ## flitrado de la señal
+ 
 def filtrar_senal(self):
     if self.datos is not None:
         fc = 30  # Frecuencia de corte en Hz
@@ -233,26 +237,92 @@ Donde se arroja la siguiente imagen:
 
 ![](https://github.com/olfred5600635/laboratorio-de-fatiga-muscular-/blob/main/Se%C3%B1alFil.png)
 
-# 3) Aventanamiento de la señal
+## Los 800 datos desde 2000
 
- def mostrar_hanning(self):
-    if self.senal_filtrada is not None:
-        ventana_hanning = signal.windows.hann(len(self.senal_filtrada))
 
-        hanning_pulsos = self.senal_filtrada * ventana_hanning  
 
+    def ver_800_desde_1(self):
+      if self.datos is not None and len(self.datos) > 800:
         self.ax.clear()
-        self.ax.plot(self.senal_filtrada, color='blue', alpha=0.5, label="Señal Filtrada")  
-        self.ax.plot(hanning_pulsos, color='orange', linestyle='--', label="Hanning ventanas")  
-        self.ax.set_title("Datos con Ventana de Hanning ")
-        self.ax.set_xlabel("Tiempo")
-        self.ax.set_ylabel("Valor")
+        self.ax.plot(self.datos[2000:2800], color='blue', label="800 muestras desde la 2000")
+        self.ax.set_title("Vista de 800 muestras desde la muestra 2000")
+        self.ax.set_xlabel("Tiempo (muestras)")
+        self.ax.set_ylabel("Amplitud")
         self.ax.legend()
+        self.ax.grid(True)
         self.canvas.draw()
 
- La ventana de Hanning es una función matemática que suaviza los extremos de la señal, evitando cambios bruscos que podrían distorsionar el análisis de frecuencias. En el código se usa la función signal.windows.hann para generar la ventana, y luego se grafica el resultado junto con la señal original para ver cómo se atenúan esos bordes. Este paso es fundamental antes de aplicar la transformada de Fourier, ya que mejora la precisión del espectro de frecuencias obtenido. donde se arroja la siguiente grafica:
+Este fragmento de código permite visualizar una parte específica de la señal, exactamente 800 datos, empezando desde la posición número 200.
+Lo que hace es cortar la señal desde ese punto y mostrarla en la gráfica, para poder observar cómo se comporta esa sección de la señal.
+
+Esot nos ayuda a observar y analisar como los puslsos como se ven en un punto donde hay mas fuerza  y como se observan cuando tienen mas fuerza el sujeto de prueba. 
+
+[![imagen-2025-04-04-180649204.png](https://i.postimg.cc/3r9VGf5k/imagen-2025-04-04-180649204.png)](https://postimg.cc/pyhsbZdv)
+
+## Los 800 datos finales
+
+
+    def ver_800_ultimas_muestras(self):
+      if self.datos is not None:
+        self.ax.clear()
+        self.ax.plot(self.datos[-800:], color='blue', label="Últimas 800 muestras")
+        self.ax.set_title("Vista de 800 últimas muestras")
+        self.ax.set_xlabel("Tiempo (muestras)")
+        self.ax.set_ylabel("Amplitud")
+        self.ax.legend()
+        self.ax.grid(True)
+        self.canvas.draw()
+        
+Este código toma las últimas 800 muestras de toda la señal que se cargó y las muestra en la gráfica.
+
+Sirve para observar el comportamiento de la señal al final del archivo, lo cual es muy útil para observar el cambio de fuerza y como se muetra la fatiga en los ultimos datos .
+
+
+[![imagen-2025-04-04-180911017.png](https://i.postimg.cc/FRpWjz6M/imagen-2025-04-04-180911017.png)](https://postimg.cc/1ngrSmsB)
+
+
+ ## Aventanamiento de la señal
+    def analizar_ventanas_hanning(self):
+        if self.datos is not None:
+        picos, _ = signal.find_peaks(self.datos, height=np.mean(self.datos))
+        medias = []
+        self.ax.clear()
+        self.ax.plot(self.datos, color='blue', alpha=0.5, label="Señal Original")
+        for pico in picos:
+            inicio = max(0, pico - 25)
+            fin = min(len(self.datos), pico + 25)
+            ventana = signal.windows.hann(fin - inicio)  # crea una ventana Hanning del tamaño del segmento
+            segmento = self.datos[inicio:fin]
+            ventana_aplicada = segmento * ventana
+            media = np.mean(ventana_aplicada)
+            medias.append((pico, media, len(segmento)))
+            self.ax.plot(range(inicio, fin), ventana_aplicada, label=f"Ventana en {pico}")
+
+        self.ax.set_title("Picos y Ventanas Hanning")
+        self.ax.set_xlabel("Tiempo (muestras)")
+        self.ax.set_ylabel("Amplitud")
+        self.ax.scatter(picos, self.datos[picos], color='red', label="Picos")
+        self.ax.legend()
+        self.canvas.draw()
+        self.mostrar_tabla_hanning(medias)
+
+Este bloque de código analiza la señal y busca los picos más altos (los valores que sobresalen), que son zonas de interés porque ahí los pulsos que se buscan .
+
+Luego, alrededor de cada pico, el programa toma una pequeña parte de la señal (25 datos antes y 25 datos después del pico, es decir, 50 datos en total) y le aplica algo llamado una ventana de Hanning.
+
+Luego, el programa calcula la media (el promedio) de esa señal suavizada, lo que permite saber cuán fuerte es ese pico de forma más confiable.
+
+Finalmente, todos esos valores (posición del pico, media y cantidad de datos usados) se muestran en una tabla para poder analizarlos.
+
+
+[![imagen-2025-04-04-181125000.png](https://i.postimg.cc/nLY0JMnX/imagen-2025-04-04-181125000.png)](https://postimg.cc/zLvnwzbN)
+
+
+[![imagen-2025-04-04-181205571.png](https://i.postimg.cc/k4Ts2Z69/imagen-2025-04-04-181205571.png)](https://postimg.cc/qhCyY1xZ)
+
 
  ![](https://github.com/olfred5600635/laboratorio-de-fatiga-muscular-/blob/main/Hanning.png)
+
 
 ## Analisis Espectral 
 
@@ -276,6 +346,7 @@ Este fragmento de código realiza el análisis espectral de la señal filtrada u
 Lo cual nos arroja lo siguiente :
 
 ![](https://github.com/olfred5600635/laboratorio-de-fatiga-muscular-/blob/main/Espectral.png)
+
 
 ## Resultados y Analisis
 

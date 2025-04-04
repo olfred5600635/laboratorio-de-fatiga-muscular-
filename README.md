@@ -156,3 +156,32 @@ Las señales en la vida real son infinitas o muy largas, pero los algoritmos (co
 
 [![imagen-2025-04-02-173705298.png](https://i.postimg.cc/rFtYDFVw/imagen-2025-04-02-173705298.png)](https://postimg.cc/WhT7KVqB)
 
+## Inicio del Laboratorio 
+
+1) # Adquision de la señal
+
+-Coloca los electrodos de superficie (3 en total):
+
+Electrodo activo 1 (positivo): sobre la parte más prominente del músculo.
+
+Electrodo activo 2 (negativo): unos 2-3 cm más abajo sobre el mismo músculo.
+
+Electrodo de referencia (tierra): en una zona ósea o lejos del músculo, por ejemplo en la muñeca o tobillo.
+
+[![imagen-2025-04-03-201924394.png](https://i.postimg.cc/Fz7YBdKt/imagen-2025-04-03-201924394.png)](https://postimg.cc/dZcQ70dn)
+
+-Aplica gel conductor, ayuda a mejorar la conductividad entre la piel y los electrodos.
+
+-Conecta los electrodos al sistema DAQ se s igue el manual del DAQ para asegurarte de conectar correctamente las entradas analógicas.
+
+-Pedir al sujeto que haga contrancciones de la parte del antebrazo y que sea constante 
+  
+-Inicia la grabación en Python usando el DAQ, Guarda los datos en un archivo .csv o matriz para su posterior análisis.
+
+-Mantén la contracción hasta que el sujeto sienta fatiga muscular.Esto puede tomar entre 30 segundos y 2 minutos.
+
+-Finaliza la grabación y guarda la señal.
+
+2) #  Filtrado de la señal
+
+   

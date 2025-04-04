@@ -182,7 +182,7 @@ Electrodo de referencia (tierra): en una zona ósea o lejos del músculo, por ej
 
 7) Finaliza la grabación y guarda la señal.
 
-2) #  Filtrado de la señal
+#  2) Filtrado de la señal
 
         def filtrar_senal(self):
          if self.datos is not None:

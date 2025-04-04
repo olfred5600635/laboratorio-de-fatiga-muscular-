@@ -184,42 +184,34 @@ Electrodo de referencia (tierra): en una zona ósea o lejos del músculo, por ej
 
 7) Finaliza la grabación y guarda la señal.
 
-#  2) Filtrado de la señal
+#  Filtrado de la señal
 
-        def filtrar_senal(self):
-         if self.datos is not None:
-            # Parámetros del filtro pasa-bajas
-            fc = 30  # Frecuencia de corte más baja (30 Hz)
-            orden = 6  # Orden del filtro más alto para mejor atenuación
-
-            # Diseño del filtro pasa-bajas Butterworth
-            b, a = signal.butter(orden, fc / (self.fs / 2), btype='low')
-
-            # Aplicación del filtro
-            senal_filtrada = signal.filtfilt(b, a, self.datos)
-   
-1) Estas dos líneas definen los parámetros del filtro:
-
-fc = 30 → es la frecuencia de corte. El filtro dejará pasar solo las señales por debajo de 30 Hz. Lo que esté por encima (como ruidos o interferencias) será eliminado.
-
-orden = 6 → es qué tan fuerte o selectivo es el filtro. Un orden más alto significa un filtrado más preciso, pero también más procesamiento.
-
-
-2) Aquí se crea el filtro Butterworth:
+ - **Creación de  el filtro Butterworth:**
 
 signal.butter(...) es una función que diseña matemáticamente el filtro.
 
-fc / (self.fs / 2) → se llama frecuencia normalizada, y se usa para que el filtro se adapte a la frecuencia de muestreo (self.fs) que estás usando.
+fc / (self.fs / 2) → se llama frecuencia normalizada, y se usa para que el filtro se adapte a la frecuencia de muestreo (self.fs).
 
-btype='low' → indica que el filtro es pasa-bajas (solo deja pasar lo lento), se usa un pasa bajos para limpiar 
-la señal EMG, eliminando ruidos de alta frecuencia y dejando solo lo que es útil para el análisis muscular.
+btype='low' → indica que el filtro es pasa-bajas , donde eliminaremos los  ruidos de alta frecuencia y dejando solo lo que es útil para el análisis muscular.
 
+   ## CODIGO
+  
+def filtrar_senal(self):
+    if self.datos is not None:
+        fc = 30  # Frecuencia de corte en Hz
+        orden = 6  # Orden del filtro
+        b, a = signal.butter(orden, fc / (self.fs / 2), btype='low')  # Diseño del filtro
+        self.senal_filtrada = signal.filtfilt(b, a, self.datos)  
 
-3) Aquí se aplica el filtro a la señal EMG real:
+        self.ax.clear()
+        self.ax.plot(self.datos, color='blue', alpha=0.5, label="Señal original")
+        self.ax.plot(self.senal_filtrada, color='green', label="Señal filtrada (30 Hz)")
+        self.ax.set_title("Señal Filtrada")
+        self.ax.set_xlabel("Tiempo (muestras)")
+        self.ax.set_ylabel("Amplitud")
+        self.ax.legend()
+        self.canvas.draw()
 
-signal.filtfilt(...) Esto se hace para que la señal no se retrase ni se deforme. Si solo aplicas un filtro una vez, puede que se mueva un poco la señal o cambie la forma de algunos picos.
-
-self.datos es la señal cruda, y senal_filtrada es la versión limpia y sin ruido , Este paso es donde realmente se limpia la señal, eliminando lo que no sirve para el análisis.
 
 # 3) Aventanamiento de la señal
    

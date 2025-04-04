@@ -160,7 +160,7 @@ Las señales en la vida real son infinitas o muy largas, pero los algoritmos (co
 
 1) # Adquision de la señal
 
--Coloca los electrodos de superficie (3 en total):
+1) Coloca los electrodos de superficie (3 en total):
 
 Electrodo activo 1 (positivo): sobre la parte más prominente del músculo.
 
@@ -170,18 +170,52 @@ Electrodo de referencia (tierra): en una zona ósea o lejos del músculo, por ej
 
 [![imagen-2025-04-03-201924394.png](https://i.postimg.cc/Fz7YBdKt/imagen-2025-04-03-201924394.png)](https://postimg.cc/dZcQ70dn)
 
--Aplica gel conductor, ayuda a mejorar la conductividad entre la piel y los electrodos.
+2) Aplica gel conductor, ayuda a mejorar la conductividad entre la piel y los electrodos.
 
--Conecta los electrodos al sistema DAQ se s igue el manual del DAQ para asegurarte de conectar correctamente las entradas analógicas.
+3) Conecta los electrodos al sistema DAQ se s igue el manual del DAQ para asegurarte de conectar correctamente las entradas analógicas.
 
--Pedir al sujeto que haga contrancciones de la parte del antebrazo y que sea constante 
+4) Pedir al sujeto que haga contrancciones de la parte del antebrazo y que sea constante 
   
--Inicia la grabación en Python usando el DAQ, Guarda los datos en un archivo .csv o matriz para su posterior análisis.
+5) Inicia la grabación en Python usando el DAQ, Guarda los datos en un archivo .csv o matriz para su posterior análisis.
 
--Mantén la contracción hasta que el sujeto sienta fatiga muscular.Esto puede tomar entre 30 segundos y 2 minutos.
+6) Mantén la contracción hasta que el sujeto sienta fatiga muscular.Esto puede tomar entre 30 segundos y 2 minutos.
 
--Finaliza la grabación y guarda la señal.
+7) Finaliza la grabación y guarda la señal.
 
 2) #  Filtrado de la señal
 
+        def filtrar_senal(self):
+         if self.datos is not None:
+            # Parámetros del filtro pasa-bajas
+            fc = 30  # Frecuencia de corte más baja (30 Hz)
+            orden = 6  # Orden del filtro más alto para mejor atenuación
+
+            # Diseño del filtro pasa-bajas Butterworth
+            b, a = signal.butter(orden, fc / (self.fs / 2), btype='low')
+
+            # Aplicación del filtro
+            senal_filtrada = signal.filtfilt(b, a, self.datos)
+   
+1) Estas dos líneas definen los parámetros del filtro:
+
+fc = 30 → es la frecuencia de corte. El filtro dejará pasar solo las señales por debajo de 30 Hz. Lo que esté por encima (como ruidos o interferencias) será eliminado.
+
+orden = 6 → es qué tan fuerte o selectivo es el filtro. Un orden más alto significa un filtrado más preciso, pero también más procesamiento.
+
+
+2) Aquí se crea el filtro Butterworth:
+
+signal.butter(...) es una función que diseña matemáticamente el filtro.
+
+fc / (self.fs / 2) → se llama frecuencia normalizada, y se usa para que el filtro se adapte a la frecuencia de muestreo (self.fs) que estás usando.
+
+btype='low' → indica que el filtro es pasa-bajas (solo deja pasar lo lento), se usa un pasa bajos para limpiar 
+la señal EMG, eliminando ruidos de alta frecuencia y dejando solo lo que es útil para el análisis muscular.
+
+
+3) Aquí se aplica el filtro a la señal EMG real:
+
+signal.filtfilt(...) aplica el filtro en dos direcciones (adelante y atrás) para que la señal no se deforme.
+
+self.datos es la señal cruda, y senal_filtrada es la versión limpia y sin ruido.
    

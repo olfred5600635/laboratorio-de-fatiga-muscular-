@@ -1,0 +1,110 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.signal as signal
+import tkinter as tk
+from tkinter import filedialog, simpledialog
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+class AnalizadorSenal:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Analizador de Señales EMG")
+
+        self.fig, self.ax = plt.subplots(figsize=(6, 3))
+        self.canvas = FigureCanvasTkAgg(self.fig, master=root)
+        self.canvas.get_tk_widget().pack()
+
+        self.ax.set_title("Señal EMG")
+        self.ax.set_xlabel("Tiempo (muestras)")
+        self.ax.set_ylabel("Amplitud")
+
+        self.datos = None
+        self.senal_filtrada = None
+        self.fs = 1000  
+
+        frame = tk.Frame(root)
+        frame.pack()
+
+        tk.Button(frame, text="Cargar señal", command=self.cargar_senal).pack(side=tk.LEFT)
+        tk.Button(frame, text="Filtrar señal", command=self.filtrar_senal).pack(side=tk.LEFT)
+        tk.Button(frame, text="Ventana Hanning", command=self.mostrar_hanning).pack(side=tk.LEFT)
+        tk.Button(frame, text="Espectro FFT", command=self.espectro_fft).pack(side=tk.LEFT)
+        tk.Button(frame, text="Captura", command=self.capturar_imagen).pack(side=tk.LEFT)
+
+    def cargar_senal(self):
+        archivo = filedialog.askopenfilename(filetypes=[("Archivos CSV", "*.csv")])
+        if archivo:
+            self.datos = np.loadtxt(archivo, delimiter=',', skiprows=1)[:, 1]
+            self.senal_filtrada = None
+            self.ax.clear()
+            self.ax.plot(self.datos, color='blue', label="Señal original")
+            self.ax.set_title("Señal EMG")
+            self.ax.set_xlabel("Tiempo (muestras)")
+            self.ax.set_ylabel("Amplitud")
+            self.ax.legend()
+            self.canvas.draw()
+
+    def filtrar_senal(self):
+        if self.datos is not None:
+            fc = 30  
+            orden = 6  
+            b, a = signal.butter(orden, fc / (self.fs / 2), btype='low')
+            self.senal_filtrada = signal.filtfilt(b, a, self.datos)
+
+            self.ax.clear()
+            self.ax.plot(self.datos, color='blue', alpha=0.5, label="Señal original")
+            self.ax.plot(self.senal_filtrada, color='green', label="Señal filtrada (30 Hz)")
+            self.ax.set_title("Señal Filtrada")
+            self.ax.set_xlabel("Tiempo (muestras)")
+            self.ax.set_ylabel("Amplitud")
+            self.ax.legend()
+            self.canvas.draw()
+
+    def mostrar_hanning(self):
+        if self.senal_filtrada is not None:
+            ventana_hanning = signal.windows.hann(len(self.senal_filtrada))
+            hanning_pulsos = self.senal_filtrada * ventana_hanning  
+
+            self.ax.clear()
+            self.ax.plot(self.senal_filtrada, color='blue', alpha=0.5, label="Señal Filtrada")  
+            self.ax.plot(hanning_pulsos, color='orange', linestyle='--', label="Hanning ventanas")  
+            self.ax.set_title("Datos con Ventana de Hanning ")
+            self.ax.set_xlabel("Tiempo (s)")
+            self.ax.set_ylabel("Valor")
+            self.ax.legend()
+            self.canvas.draw()
+
+    def espectro_fft(self):
+        if self.datos is not None:
+            opcion = simpledialog.askstring("Selección de Señal", "¿Deseas analizar la señal 'original' o 'filtrada'?")
+            
+            if opcion == "filtrada" and self.senal_filtrada is not None:
+                senal = self.senal_filtrada
+                titulo = "Espectro de la Señal Filtrada"
+            else:
+                senal = self.datos
+                titulo = "Espectro de la Señal Original"
+
+            N = len(senal)
+            fft_senal = np.fft.fft(senal)
+            fft_senal = np.abs(fft_senal[:N // 2])  
+            f = np.fft.fftfreq(N, d=1/self.fs)[:N // 2]  
+
+            plt.figure("Espectro de Frecuencia (FFT)")
+            plt.semilogy(f, fft_senal, color='purple')
+            plt.title(titulo)
+            plt.xlabel("Frecuencia (Hz)")
+            plt.ylabel("Magnitud (escala log)")
+            plt.grid(True)
+            plt.show()
+
+    def capturar_imagen(self):
+        archivo = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("Imagen PNG", "*.png")])
+        if archivo:
+            self.fig.savefig(archivo, dpi=300)
+            print("Imagen guardada:", archivo)
+
+# Iniciar interfaz
+root = tk.Tk()
+app = AnalizadorSenal(root)
+root.mainloop()

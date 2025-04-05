@@ -375,11 +375,22 @@ Lo cual nos arroja lo siguiente :
 
 ## Resultados y Analisis
 
+# 1)
 - Como se peude observar en las graficas de los datos de 800 datos desde 2000 y los 800 datos fianles , se nota una gran diferencias en los pulsos,
   siendo notorio dos cuestiones. La primera cuestionos el numero de picos que se ve en la de 800 datos desde 2000 en el pulso se ven mas picos siendo un total de 8 picos contados pero
   los 800 datos del final se pueden registrar 5 picos siendo un pulso menor y notando una fatiga y la segunda cuestion que nos deja ver la diferencias es el tamaño tan irregulas de los picos en el pulso como se observor en la grafica de los
   800 datos desde los 2000 se ven que los picos se mentienen de una forma mas regular que en los 800 datos finales, esto dejandos analisar que cuando se llego a la fatiga del sujeto de pruebas se pudo observar que en algunas occaciones el sujeto intentara recuperar la fuerza pero igualmenete
   se notaba en ese lapso de tiempo la fatiga del musculo llengando a mostrar esas irregularidad de los picos.
 
--
-   
+# 2)
+- Para analizar esta señal, se aplicó una ventana de Hanning , que "limpia" los datos eliminando ruido y resaltando patrones clave.
+
+El gráfico 1 compara la señal original (línea azul) con versiones filtradas usando ventanas de Hanning en diferentes momentos (líneas de colores). Los puntos rojos marcan los picos máximos de fuerza en cada ventana. Al inicio, estos picos son altos (cerca de 3), pero conforme avanza el tiempo (hacia la derecha del eje), disminuyen progresivamente hasta valores cercanos a 1.5 – 2. Esto reflejacómo el músculo pierde capacidad para generar esfuerzo máximo debido a la fatiga. Además, hacia el final de la señal, los picos se vuelven irregulares: algunos suben brevemente (intentos de recuperar fuerza) pero caen rápidamente, indicando que el agotamiento persiste, como se habia dicho en el analisi anterior .
+
+El segundo gráfico )contrasta la señal original (azul) con la versión filtrada por Hanning (naranja). La línea naranja es más suave, eliminando fluctuaciones pequeñas y mostrando una tendencia clara: la fuerza disminuye de manera sostenida. Esto confirma que la ventana de Hanning ayuda a identificar cambios graduales en la actividad muscular, incluso en presencia de ruido.
+
+La tabla muestra estadísticas como la media y desviación estándar de los picos en diferentes segmentos de la señal que nos ayudaran tambien a poder hayar el test de medias y las hipótesis nula y alternativa para llegar a un analisas que se dara mas adelante . Aunque los valores numéricos son similares (media 0.79 – 0.80, desviación ~0.58), lo relevante es que la ventana de Hanning mantiene consistencia en los datos, permitiendo comparar etapas tempranas y tardías del ejercicio sin distorsiones.
+
+ en conclucion de este analisis se peude decir que En este caso, la Hanning fue elegida porque priorizaba precisión en el tiempo (para detectar picos de fuerza y fatiga) sin sacrificar demasiado la claridad en el dominio frecuencial. La Hamming, aunque útil en aplicaciones donde las fugas son críticas , no era necesaria aquí, ya que el foco estaba en analizar cambios dinámicos en la actividad muscular.
+
+ -

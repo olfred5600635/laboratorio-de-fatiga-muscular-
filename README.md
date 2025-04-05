@@ -478,10 +478,14 @@ Finalmente, el resultado se muestra en una ventana y también se guarda en un ar
 
 # 3)
 -  Los resultados obtenidos muestran que el primer pico identificado en la señal ocurrió en el índice 1, mientras que el último pico detectado se encuentra en el índice 34,661. A través de la prueba t de Student se obtuvo un valor de t = 0.2154 dandonos un  valor bajo de t indicando  que las diferencias entre ambas ventanas de señal no son grandes. y un p-valor = 0.829925. Dado que este último es mayor a 0.05,  aceptando  la hipótesis nula, lo que indica que no hay diferencias significativas entre la actividad muscular en los dos momentos analizados.
-Estos resultados sugieren que, en este experimento, la fatiga no generó un cambio estadísticamente significativo en la señal EMG. Esto puede deberse a varios factores, como una insuficiente intensidad en el esfuerzo realizado, una duración inadecuada del experimento, o la necesidad de un análisis más detallado en otras secciones de la señal.
+  
+-  Estos resultados sugieren que, en este experimento, la fatiga no generó un cambio estadísticamente significativo en la señal EMG. Esto puede deberse a varios factores, como una insuficiente intensidad en el esfuerzo realizado, una duración inadecuada del experimento, o la necesidad de un análisis más detallado en otras secciones de la señal.
 
 # 4)
 -  En este experimento se analizó cómo cambia la señal muscular a medida que se presenta la fatiga. A través de las gráficas iniciales se notó una reducción en el número y tamaño de los picos, lo que indica una pérdida de fuerza con el tiempo. La señal se volvió más irregular, lo que sugiere que el músculo trataba de mantener el esfuerzo pero ya mostraba signos de agotamiento.
-Al aplicar una ventana de Hanning para suavizar la señal, se hizo más evidente la caída progresiva en los picos de fuerza, ayudando a identificar mejor los momentos de fatiga. Además, la comparación entre la señal original y la filtrada confirmó una tendencia descendente en la actividad muscular.
-Sin embargo, el análisis estadístico con la prueba t de Student no mostró una diferencia significativa entre el inicio y el final del esfuerzo. Esto sugiere que, aunque visualmente se observa un cambio, desde el punto de vista estadístico no fue suficiente para confirmar una diferencia clara.
+
+ Al aplicar una ventana de Hanning para suavizar la señal, se hizo más evidente la caída progresiva en los picos de fuerza, ayudando a identificar mejor los momentos de fatiga. Además, la comparación entre la señal original y la filtrada 
+ confirmó una tendencia descendente en la actividad muscular.
+ Sin embargo, el análisis estadístico con la prueba t de Student no mostró una diferencia significativa entre el inicio y el final del esfuerzo. Esto sugiere que, aunque visualmente se observa un cambio, desde el punto de vista estadístico no 
+ fue suficiente para confirmar una diferencia clara.
 

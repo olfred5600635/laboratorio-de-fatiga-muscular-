@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as signal
+from scipy.stats import ttest_ind
 import tkinter as tk
-from tkinter import filedialog, simpledialog
+from tkinter import filedialog, simpledialog, Toplevel, ttk, messagebox
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class AnalizadorSenal:
@@ -10,7 +11,7 @@ class AnalizadorSenal:
         self.root = root
         self.root.title("Analizador de Señales EMG")
 
-        self.fig, self.ax = plt.subplots(figsize=(6, 3))
+        self.fig, self.ax = plt.subplots(figsize=(7, 3))
         self.canvas = FigureCanvasTkAgg(self.fig, master=root)
         self.canvas.get_tk_widget().pack()
 
@@ -20,34 +21,44 @@ class AnalizadorSenal:
 
         self.datos = None
         self.senal_filtrada = None
-        self.fs = 1000  
+        self.resultados_hanning = []
+        self.fs = 1000  # Frecuencia de muestreo en Hz
 
         frame = tk.Frame(root)
         frame.pack()
 
         tk.Button(frame, text="Cargar señal", command=self.cargar_senal).pack(side=tk.LEFT)
         tk.Button(frame, text="Filtrar señal", command=self.filtrar_senal).pack(side=tk.LEFT)
-        tk.Button(frame, text="Ventana Hanning", command=self.mostrar_hanning).pack(side=tk.LEFT)
+        tk.Button(frame, text="Ver 3500 muestras", command=self.ver_3500_muestras).pack(side=tk.LEFT)
+        tk.Button(frame, text="Ver 800 desde muestra 2000", command=self.ver_800_desde_2000).pack(side=tk.LEFT)
+        tk.Button(frame, text="Ver 800 últimas muestras", command=self.ver_800_ultimas_muestras).pack(side=tk.LEFT)
+        tk.Button(frame, text="Ventana Hanning", command=self.analizar_ventanas_hanning).pack(side=tk.LEFT)
         tk.Button(frame, text="Espectro FFT", command=self.espectro_fft).pack(side=tk.LEFT)
+        tk.Button(frame, text="Test de Hipótesis", command=self.test_hipotesis_hanning).pack(side=tk.LEFT)
         tk.Button(frame, text="Captura", command=self.capturar_imagen).pack(side=tk.LEFT)
 
     def cargar_senal(self):
         archivo = filedialog.askopenfilename(filetypes=[("Archivos CSV", "*.csv")])
         if archivo:
-            self.datos = np.loadtxt(archivo, delimiter=',', skiprows=1)[:, 1]
-            self.senal_filtrada = None
-            self.ax.clear()
-            self.ax.plot(self.datos, color='blue', label="Señal original")
-            self.ax.set_title("Señal EMG")
-            self.ax.set_xlabel("Tiempo (muestras)")
-            self.ax.set_ylabel("Amplitud")
-            self.ax.legend()
-            self.canvas.draw()
+            try:
+                data = np.genfromtxt(archivo, delimiter=',', skip_header=1)
+                self.datos = data[:, 1] if data.ndim > 1 else data
+                self.datos = np.nan_to_num(self.datos)
+                self.senal_filtrada = None
+                self.ax.clear()
+                self.ax.plot(self.datos, color='blue', label="Señal original")
+                self.ax.set_title("Señal EMG")
+                self.ax.set_xlabel("Tiempo (muestras)")
+                self.ax.set_ylabel("Amplitud")
+                self.ax.legend()
+                self.canvas.draw()
+            except Exception as e:
+                print("Error al cargar la señal:", e)
 
     def filtrar_senal(self):
         if self.datos is not None:
-            fc = 30  
-            orden = 6  
+            fc = 30
+            orden = 6
             b, a = signal.butter(orden, fc / (self.fs / 2), btype='low')
             self.senal_filtrada = signal.filtfilt(b, a, self.datos)
 
@@ -60,24 +71,129 @@ class AnalizadorSenal:
             self.ax.legend()
             self.canvas.draw()
 
-    def mostrar_hanning(self):
-        if self.senal_filtrada is not None:
-            ventana_hanning = signal.windows.hann(len(self.senal_filtrada))
-            hanning_pulsos = self.senal_filtrada * ventana_hanning  
-
+    def analizar_ventanas_hanning(self):
+        if self.datos is not None:
+            picos, _ = signal.find_peaks(self.datos, height=np.mean(self.datos))
+            resultados = []
             self.ax.clear()
-            self.ax.plot(self.senal_filtrada, color='blue', alpha=0.5, label="Señal Filtrada")  
-            self.ax.plot(hanning_pulsos, color='orange', linestyle='--', label="Hanning ventanas")  
-            self.ax.set_title("Datos con Ventana de Hanning ")
-            self.ax.set_xlabel("Tiempo (s)")
-            self.ax.set_ylabel("Valor")
+            self.ax.plot(self.datos, color='blue', alpha=0.5, label="Señal Original")
+            for pico in picos:
+                inicio = max(0, pico - 25)
+                fin = inicio + 50
+                if fin > len(self.datos):
+                    continue
+                ventana = signal.windows.hann(50)
+                segmento = self.datos[inicio:fin]
+                ventana_aplicada = segmento * ventana
+                media = np.mean(ventana_aplicada)
+                desviacion = np.std(ventana_aplicada)
+                resultados.append((pico, media, desviacion, len(segmento)))
+                self.ax.plot(range(inicio, fin), ventana_aplicada, label=f"Ventana en {pico}")
+
+            self.resultados_hanning = resultados
+            self.ax.set_title("Picos y Ventanas Hanning")
+            self.ax.set_xlabel("Tiempo (muestras)")
+            self.ax.set_ylabel("Amplitud")
+            self.ax.scatter(picos, self.datos[picos], color='red', label="Picos")
             self.ax.legend()
             self.canvas.draw()
+
+            self.mostrar_tabla_hanning(resultados)
+
+    def mostrar_tabla_hanning(self, resultados):
+        ventana_tabla = Toplevel(self.root)
+        ventana_tabla.title("Medias y Desviaciones de Ventanas Hanning")
+
+        frame_tabla = tk.Frame(ventana_tabla)
+        frame_tabla.pack(fill=tk.BOTH, expand=True)
+
+        scrollbar = tk.Scrollbar(frame_tabla)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        columnas = ("Pico", "Media", "Desviación", "Datos usados")
+        tabla = ttk.Treeview(frame_tabla, columns=columnas, show='headings', yscrollcommand=scrollbar.set)
+        for col in columnas:
+            tabla.heading(col, text=col)
+
+        scrollbar.config(command=tabla.yview)
+
+        for pico, media, desviacion, cantidad in resultados:
+            tabla.insert('', 'end', values=(pico, f"{media:.4f}", f"{desviacion:.4f}", cantidad))
+
+        tabla.pack(fill=tk.BOTH, expand=True)
+
+    
+    def test_hipotesis_hanning(self):
+        resultados = self.resultados_hanning
+        if len(resultados) < 2:
+            messagebox.showinfo("Test de Hipótesis", "Se necesitan al menos dos ventanas para realizar el test.")
+            return
+
+        primer_pico = resultados[0][0]
+        ultimo_pico = resultados[-1][0]
+
+        inicio_1 = max(0, primer_pico - 25)
+        fin_1 = inicio_1 + 50
+        inicio_2 = max(0, ultimo_pico - 25)
+        fin_2 = inicio_2 + 50
+
+        if fin_1 > len(self.datos) or fin_2 > len(self.datos):
+            messagebox.showwarning("Test de Hipótesis", "Una de las ventanas excede los límites de la señal.")
+            return
+
+        ventana = signal.windows.hann(50)
+        segmento_1 = self.datos[inicio_1:fin_1] * ventana
+        segmento_2 = self.datos[inicio_2:fin_2] * ventana
+
+        t_stat, p_value = ttest_ind(segmento_1, segmento_2)
+
+        # Determinar resultado basado en p-valor
+        if p_value < 0.05:
+            resultado_hipotesis = "**Hipótesis Alternativa ACEPTADA** (p < 0.05)\nLos datos presentan diferencias significativas."
+        else:
+            resultado_hipotesis = "**Hipótesis Nula ACEPTADA** (p ≥ 0.05)\nNo hay diferencias significativas entre los datos."
+
+        mensaje = (
+            f"Test de Hipótesis entre primer y último pico:\n\n"
+            f"Primer pico (índice): {primer_pico}\n"
+            f"Último pico (índice): {ultimo_pico}\n\n"
+            f"t: {t_stat:.4f}\n"
+            f"p: {p_value:.6f}\n\n"
+            f"{resultado_hipotesis}"
+        )
+
+        # Mostrar ventana con resultado
+        messagebox.showinfo("Resultado del Test de Hipótesis", mensaje)
+
+        # Guardar en archivo
+        try:
+            with open("resultado_test_hipotesis.txt", "w", encoding="utf-8") as f:
+                f.write(mensaje)
+            print("Resultado guardado en: resultado_test_hipotesis.txt")
+        except Exception as e:
+            print("Error al guardar el archivo:", e)
+
+        # Gráfico del resultado
+        self.ax.clear()
+        self.ax.plot(self.datos, color='lightgray', label="Señal original")
+        self.ax.plot(range(inicio_1, fin_1), segmento_1, color='orange', label=f"Ventana 1 (pico {primer_pico})")
+        self.ax.plot(range(inicio_2, fin_2), segmento_2, color='magenta', label=f"Ventana 2 (pico {ultimo_pico})")
+
+        # Representación gráfica del área de rechazo (p-valor)
+        x_rechazo = np.linspace(1.5, 3, 100)
+        y_rechazo = np.exp(-x_rechazo**2)
+        self.ax.fill_between(x_rechazo, y_rechazo, alpha=0.3, color='blue', label="Región de rechazo")
+
+        self.ax.set_title("Comparación de Ventanas para Test de Hipótesis")
+        self.ax.set_xlabel("Tiempo (muestras)")
+        self.ax.set_ylabel("Amplitud")
+        self.ax.legend()
+        self.ax.grid(True)
+        self.canvas.draw()
 
     def espectro_fft(self):
         if self.datos is not None:
             opcion = simpledialog.askstring("Selección de Señal", "¿Deseas analizar la señal 'original' o 'filtrada'?")
-            
             if opcion == "filtrada" and self.senal_filtrada is not None:
                 senal = self.senal_filtrada
                 titulo = "Espectro de la Señal Filtrada"
@@ -86,25 +202,64 @@ class AnalizadorSenal:
                 titulo = "Espectro de la Señal Original"
 
             N = len(senal)
-            fft_senal = np.fft.fft(senal)
-            fft_senal = np.abs(fft_senal[:N // 2])  
-            f = np.fft.fftfreq(N, d=1/self.fs)[:N // 2]  
+            ventana = np.hanning(N)
+            senal_ventaneada = senal * ventana
+            fft_senal = np.fft.fft(senal_ventaneada)
+            fft_senal = np.abs(fft_senal[:N // 2])
+            f = np.fft.fftfreq(N, d=1/self.fs)[:N // 2]
 
-            plt.figure("Espectro de Frecuencia (FFT)")
-            plt.semilogy(f, fft_senal, color='purple')
-            plt.title(titulo)
-            plt.xlabel("Frecuencia (Hz)")
-            plt.ylabel("Magnitud (escala log)")
-            plt.grid(True)
-            plt.show()
+            self.ax.clear()
+            self.ax.set_yscale('log')
+            self.ax.plot(f, fft_senal, color='purple', label="Espectro de la señal")
+            self.ax.set_title(titulo)
+            self.ax.set_xlabel("Frecuencia (Hz)")
+            self.ax.set_ylabel("Magnitud (log)")
+            self.ax.set_xlim(0, self.fs / 2)
+            self.ax.set_ylim(1e-2, 1e5)
+            self.ax.legend()
+            self.ax.grid(True, which='both')
+            self.canvas.draw()
 
     def capturar_imagen(self):
-        archivo = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("Imagen PNG", "*.png")])
+        archivo = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG", "*.png"), ("JPEG", "*.jpg"), ("Todos los archivos", "*.*")])
         if archivo:
-            self.fig.savefig(archivo, dpi=300)
-            print("Imagen guardada:", archivo)
+            self.fig.savefig(archivo)
+            print(f"Imagen guardada en: {archivo}")
 
-# Iniciar interfaz
+    def ver_3500_muestras(self):
+        if self.datos is not None:
+            self.ax.clear()
+            self.ax.plot(self.datos[:3500], color='blue', label="Primeras 3500 muestras")
+            self.ax.set_title("Vista de 3500 muestras")
+            self.ax.set_xlabel("Tiempo (muestras)")
+            self.ax.set_ylabel("Amplitud")
+            self.ax.legend()
+            self.ax.grid(True)
+            self.canvas.draw()
+
+    def ver_800_desde_2000(self):
+        if self.datos is not None and len(self.datos) > 2800:
+            self.ax.clear()
+            self.ax.plot(self.datos[2000:2800], color='blue', label="800 muestras desde la 2000")
+            self.ax.set_title("Vista de 800 muestras desde la muestra 2000")
+            self.ax.set_xlabel("Tiempo (muestras)")
+            self.ax.set_ylabel("Amplitud")
+            self.ax.legend()
+            self.ax.grid(True)
+            self.canvas.draw()
+
+    def ver_800_ultimas_muestras(self):
+        if self.datos is not None:
+            self.ax.clear()
+            self.ax.plot(self.datos[-800:], color='blue', label="Últimas 800 muestras")
+            self.ax.set_title("Vista de 800 últimas muestras")
+            self.ax.set_xlabel("Tiempo (muestras)")
+            self.ax.set_ylabel("Amplitud")
+            self.ax.legend()
+            self.ax.grid(True)
+            self.canvas.draw()
+
+# Ejecutar interfaz
 root = tk.Tk()
 app = AnalizadorSenal(root)
 root.mainloop()

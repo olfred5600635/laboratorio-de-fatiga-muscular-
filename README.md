@@ -377,6 +377,86 @@ Lo cual nos arroja lo siguiente :
 
 ![](https://github.com/olfred5600635/laboratorio-de-fatiga-muscular-/blob/main/Espectral.png)
 
+## test de hipotesis 
+    def test_hipotesis_hanning(self):
+    resultados = self.resultados_hanning
+    if len(resultados) < 2:
+        messagebox.showinfo("Test de Hipótesis", "Se necesitan al menos dos ventanas para realizar el test.")
+        return
+
+    primer_pico = resultados[0][0]
+    ultimo_pico = resultados[-1][0]
+
+    inicio_1 = max(0, primer_pico - 25)
+    fin_1 = inicio_1 + 50
+    inicio_2 = max(0, ultimo_pico - 25)
+    fin_2 = inicio_2 + 50
+
+    if fin_1 > len(self.datos) or fin_2 > len(self.datos):
+        messagebox.showwarning("Test de Hipótesis", "Una de las ventanas excede los límites de la señal.")
+        return
+
+    ventana = signal.windows.hann(50)
+    segmento_1 = self.datos[inicio_1:fin_1] * ventana
+    segmento_2 = self.datos[inicio_2:fin_2] * ventana
+
+    t_stat, p_value = ttest_ind(segmento_1, segmento_2)
+
+    if p_value < 0.05:
+        resultado_hipotesis = "**Hipótesis Alternativa ACEPTADA** (p < 0.05)\nLos datos presentan diferencias significativas."
+    else:
+        resultado_hipotesis = "**Hipótesis Nula ACEPTADA** (p ≥ 0.05)\nNo hay diferencias significativas entre los datos."
+
+    mensaje = (
+        f"Test de Hipótesis entre primer y último pico:\n\n"
+        f"Primer pico (índice): {primer_pico}\n"
+        f"Último pico (índice): {ultimo_pico}\n\n"
+        f"t: {t_stat:.4f}\n"
+        f"p: {p_value:.6f}\n\n"
+        f"{resultado_hipotesis}"
+    )
+
+    messagebox.showinfo("Resultado del Test de Hipótesis", mensaje)
+
+    try:
+        with open("resultado_test_hipotesis.txt", "w", encoding="utf-8") as f:
+            f.write(mensaje)
+        print("Resultado guardado en: resultado_test_hipotesis.txt")
+    except Exception as e:
+        print("Error al guardar el archivo:", e)
+
+    self.ax.clear()
+    self.ax.plot(self.datos, color='lightgray', label="Señal original")
+    self.ax.plot(range(inicio_1, fin_1), segmento_1, color='orange', label=f"Ventana 1 (pico {primer_pico})")
+    self.ax.plot(range(inicio_2, fin_2), segmento_2, color='magenta', label=f"Ventana 2 (pico {ultimo_pico})")
+
+    self.ax.set_title("Comparación de Ventanas para Test de Hipótesis")
+    self.ax.set_xlabel("Tiempo (muestras)")
+    self.ax.set_ylabel("Amplitud")
+    self.ax.legend()
+    self.ax.grid(True)
+    self.canvas.draw()
+
+Este fragmento de código realiza una comparación estadística entre dos partes de la señal de EMG (una al principio y otra al final) para ver si hay una diferencia significativa entre ellas.
+Primero, el programa detecta los picos más importantes en la señal. Luego, toma dos fragmentos cortos de la señal: uno alrededor del primer pico y otro alrededor del último pico. Cada fragmento contiene 50 datos, centrados en el pico detectado.
+Después, el programa aplica una ventana Hanning, que es una forma suave de enfocar esos datos para evitar distorsiones. Esto ayuda a que el análisis sea más preciso.
+Con estos dos fragmentos listos, se hace una prueba estadística llamada "test t". Esta prueba sirve para comparar si las dos partes de la señal tienen valores muy distintos o no con la formula:
+
+       t= (μ1-μ2)/√((s1^2/n1)+(s2^2/n2))
+donde:
+μ= al promedio de los pulso 
+s= la desviacion estandar 
+n= el numero de dato 
+Todo estos datos son proporcionado por la tabla del boton de (ventana hanning)
+
+-  Si el resultado indica que sí hay diferencias significativas, se muestra un mensaje diciendo que la hipótesis alternativa es aceptada. Esto quiere decir que probablemente el sujeto de prueba aplicó más fuerza (o menos) en un momento comparado con otro.
+
+-  Si no hay diferencias, se acepta la hipótesis nula, lo que significa que la señal fue parecida en ambos momentos.
+
+Finalmente, el resultado se muestra en una ventana y también se guarda en un archivo de texto.
+
+[![imagen-2025-04-04-220727276.png](https://i.postimg.cc/0jhZdBYS/imagen-2025-04-04-220727276.png)](https://postimg.cc/MfbyztrZ)
+
 
 ## Resultados y Analisis
 
@@ -396,4 +476,15 @@ Lo cual nos arroja lo siguiente :
 
 - en conclucion de este analisis se peude decir que En este caso, la Hanning fue elegida porque priorizaba precisión en el tiempo (para detectar picos de fuerza y fatiga) sin sacrificar demasiado la claridad en el dominio frecuencial. La Hamming, aunque útil en aplicaciones donde las fugas son críticas , no era necesaria aquí, ya que el foco estaba en analizar cambios dinámicos en la actividad muscular.
 
- -
+# 3)
+-  Los resultados obtenidos muestran que el primer pico identificado en la señal ocurrió en el índice 1, mientras que el último pico detectado se encuentra en el índice 34,661. A través de la prueba t de Student se obtuvo un valor de t = 0.2154 dandonos un  valor bajo de t indicando  que las diferencias entre ambas ventanas de señal no son grandes. y un p-valor = 0.829925. Dado que este último es mayor a 0.05,  aceptando  la hipótesis nula, lo que indica que no hay diferencias significativas entre la actividad muscular en los dos momentos analizados.
+
+Estos resultados sugieren que, en este experimento, la fatiga no generó un cambio estadísticamente significativo en la señal EMG. Esto puede deberse a varios factores, como una insuficiente intensidad en el esfuerzo realizado, una duración inadecuada del experimento, o la necesidad de un análisis más detallado en otras secciones de la señal.
+
+# 4)
+En este experimento se analizó cómo cambia la señal muscular a medida que se presenta la fatiga. A través de las gráficas iniciales se notó una reducción en el número y tamaño de los picos, lo que indica una pérdida de fuerza con el tiempo. La señal se volvió más irregular, lo que sugiere que el músculo trataba de mantener el esfuerzo pero ya mostraba signos de agotamiento.
+
+Al aplicar una ventana de Hanning para suavizar la señal, se hizo más evidente la caída progresiva en los picos de fuerza, ayudando a identificar mejor los momentos de fatiga. Además, la comparación entre la señal original y la filtrada confirmó una tendencia descendente en la actividad muscular.
+
+Sin embargo, el análisis estadístico con la prueba t de Student no mostró una diferencia significativa entre el inicio y el final del esfuerzo. Esto sugiere que, aunque visualmente se observa un cambio, desde el punto de vista estadístico no fue suficiente para confirmar una diferencia clara.
+

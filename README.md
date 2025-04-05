@@ -389,8 +389,6 @@ Lo cual nos arroja lo siguiente :
 
 -El segundo gráfico muestra como la señal original (azul) con la versión filtrada por Hanning (naranja) se contrastan una a la otra mostrando que  La línea naranja es más suave, eliminando fluctuaciones pequeñas y mostrando una tendencia clara: la fuerza disminuye de manera sostenida. Esto confirma que la ventana de Hanning ayuda a identificar cambios graduales en la actividad muscular, incluso en presencia de ruido.
 
--La tabla muestra estadísticas como la media y desviación estándar de los picos en diferentes segmentos de la señal que nos ayudaran tambien a poder hayar el test de medias y las hipótesis nula y alternativa para llegar a un analisas que se dara mas adelante . Aunque los valores numéricos son similares (media 0.79 – 0.80, desviación ~0.58), lo relevante es que la ventana de Hanning mantiene consistencia en los datos, permitiendo comparar etapas tempranas y tardías del ejercicio sin distorsiones.
-
 - en conclucion de este analisis se peude decir que En este caso, la Hanning fue elegida porque priorizaba precisión en el tiempo (para detectar picos de fuerza y fatiga) sin sacrificar demasiado la claridad en el dominio frecuencial. La Hamming, aunque útil en aplicaciones donde las fugas son críticas , no era necesaria aquí, ya que el foco estaba en analizar cambios dinámicos en la actividad muscular.
 
  -

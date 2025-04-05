@@ -186,7 +186,7 @@ Electrodo de referencia (tierra): en una zona ósea o lejos del músculo, por ej
 
 ## INTERFAZ
 
-[![imagen-2025-04-04-172046575.png](https://i.postimg.cc/8kbw37t9/imagen-2025-04-04-172046575.png)](https://postimg.cc/Yjh1LCcz)
+[![imagen-2025-04-04-203445753.png](https://i.postimg.cc/7hwgNrcj/imagen-2025-04-04-203445753.png)](https://postimg.cc/34f4KV3Z)
 
 **Captura:**  corresponde a adquirir y analizar en tiempo real los datos de la señal EMG mediante un sistema de adquisición de datos (DAQ). Cuando se pulsa el botón "Capturar desde DAQ", el código se conecta al dispositivo (usando, por ejemplo, la librería nidaqmx de National Instruments) y obtiene un bloque de datos en tiempo real.
 
@@ -202,6 +202,7 @@ Electrodo de referencia (tierra): en una zona ósea o lejos del músculo, por ej
 
 **Espectro FFT:** Al pulsar este botón, se calcula la Transformada Rápida de Fourier (FFT) de la señal filtrada. Se muestra el espectro de frecuencia en una nueva ventana usando una escala logarítmica en el eje y. Esto ayuda a identificar las componentes de frecuencia dominantes, lo cual es esencial para el análisis espectral.
 
+**Test de  hipotesis:** Al pulsar este boton nos dara el teste de stevens o de hipotesis para la los dos ultimos pico tomados mostrandonos tambien la grafica de que datos se tomaron.
 
 
 #  Filtrado de la señal

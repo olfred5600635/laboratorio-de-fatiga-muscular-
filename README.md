@@ -157,7 +157,11 @@ Las señales en la vida real son infinitas o muy largas, pero los algoritmos (co
 - Cuándo usarla: Para señales donde la supresión de ruido y la suavización son más importantes que la resolución.
 
 [![imagen-2025-04-02-173705298.png](https://i.postimg.cc/rFtYDFVw/imagen-2025-04-02-173705298.png)](https://postimg.cc/WhT7KVqB)
- 
+
+## Test de hipotesis o stevens 
+
+El test de hipótesis es una herramienta fundamental en la estadística inferencial, utilizada para determinar si existen diferencias significativas entre dos grupos de datos o condiciones. Este procedimiento se basa en formular dos hipótesis: la hipótesis nula (H₀), que asume que no hay diferencia entre los grupos comparados, y la hipótesis alternativa (H₁), que plantea que sí existe una diferencia estadísticamente significativa. La decisión sobre cuál hipótesis aceptar se toma mediante el cálculo de un valor p, el cual representa la probabilidad de obtener los resultados observados, o más extremos, bajo el supuesto de que la hipótesis nula es cierta. Si este valor p es menor que un umbral predeterminado (comúnmente 0.05), se rechaza la hipótesis nula en favor de la alternativa, concluyendo que existe una diferencia significativa entre los grupos.
+
 ## Inicio del Laboratorio 
 
 1) # Adquision de la señal

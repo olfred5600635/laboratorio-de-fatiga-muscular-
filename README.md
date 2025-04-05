@@ -482,7 +482,7 @@ Finalmente, el resultado se muestra en una ventana y también se guarda en un ar
 Estos resultados sugieren que, en este experimento, la fatiga no generó un cambio estadísticamente significativo en la señal EMG. Esto puede deberse a varios factores, como una insuficiente intensidad en el esfuerzo realizado, una duración inadecuada del experimento, o la necesidad de un análisis más detallado en otras secciones de la señal.
 
 # 4)
-En este experimento se analizó cómo cambia la señal muscular a medida que se presenta la fatiga. A través de las gráficas iniciales se notó una reducción en el número y tamaño de los picos, lo que indica una pérdida de fuerza con el tiempo. La señal se volvió más irregular, lo que sugiere que el músculo trataba de mantener el esfuerzo pero ya mostraba signos de agotamiento.
+-  En este experimento se analizó cómo cambia la señal muscular a medida que se presenta la fatiga. A través de las gráficas iniciales se notó una reducción en el número y tamaño de los picos, lo que indica una pérdida de fuerza con el tiempo. La señal se volvió más irregular, lo que sugiere que el músculo trataba de mantener el esfuerzo pero ya mostraba signos de agotamiento.
 
 Al aplicar una ventana de Hanning para suavizar la señal, se hizo más evidente la caída progresiva en los picos de fuerza, ayudando a identificar mejor los momentos de fatiga. Además, la comparación entre la señal original y la filtrada confirmó una tendencia descendente en la actividad muscular.
 

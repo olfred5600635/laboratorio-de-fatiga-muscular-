@@ -282,20 +282,40 @@ Sirve para observar el comportamiento de la señal al final del archivo, lo cual
 
 
  ## Aventanamiento de la señal
+   
     def analizar_ventanas_hanning(self):
-        if self.datos is not None:
+    if self.datos is not None:
+        # Este bloque de código analiza la señal y busca los picos más altos (los valores que sobresalen),
+        # que son zonas de interés porque ahí están los pulsos que se buscan.
         picos, _ = signal.find_peaks(self.datos, height=np.mean(self.datos))
-        medias = []
+
+        resultados = []  # Aquí se guardarán los resultados para mostrarlos en la tabla
+
         self.ax.clear()
         self.ax.plot(self.datos, color='blue', alpha=0.5, label="Señal Original")
+
         for pico in picos:
+            # Luego, alrededor de cada pico, el programa toma una pequeña parte de la señal
+            # (25 datos antes y 25 datos después del pico, es decir, 50 datos en total)
             inicio = max(0, pico - 25)
-            fin = min(len(self.datos), pico + 25)
-            ventana = signal.windows.hann(fin - inicio)  # crea una ventana Hanning del tamaño del segmento
+            fin = inicio + 50
+
+            if fin > len(self.datos):
+                continue  # Si nos pasamos del final de la señal, saltamos este pico
+
             segmento = self.datos[inicio:fin]
+
+            # y le aplica algo llamado una ventana de Hanning
+            ventana = signal.windows.hann(50)
             ventana_aplicada = segmento * ventana
+
+            # Luego, el programa calcula la media (el promedio) de esa señal suavizada,
+            # lo que permite saber cuán fuerte es ese pico de forma más confiable.
             media = np.mean(ventana_aplicada)
-            medias.append((pico, media, len(segmento)))
+            desviacion = np.std(ventana_aplicada)
+
+            resultados.append((pico, media, desviacion, len(segmento)))
+
             self.ax.plot(range(inicio, fin), ventana_aplicada, label=f"Ventana en {pico}")
 
         self.ax.set_title("Picos y Ventanas Hanning")
@@ -304,18 +324,23 @@ Sirve para observar el comportamiento de la señal al final del archivo, lo cual
         self.ax.scatter(picos, self.datos[picos], color='red', label="Picos")
         self.ax.legend()
         self.canvas.draw()
-        self.mostrar_tabla_hanning(medias)
+
+        # Finalmente, todos esos valores (posición del pico, media, desviación y cantidad de datos usados)
+        # se muestran en una tabla para poder analizarlos.
+        self.mostrar_tabla_hanning(resultados)
+
+
 
 Este bloque de código analiza la señal y busca los picos más altos (los valores que sobresalen), que son zonas de interés porque ahí los pulsos que se buscan .
 
 Luego, alrededor de cada pico, el programa toma una pequeña parte de la señal (25 datos antes y 25 datos después del pico, es decir, 50 datos en total) y le aplica algo llamado una ventana de Hanning.
 
-Luego, el programa calcula la media (el promedio) de esa señal suavizada, lo que permite saber cuán fuerte es ese pico de forma más confiable.
+Después, el programa calcula la media (el promedio) y la desviación estándar de esa señal suavizada. Esto permite saber cuán fuerte y consistente es ese pico de una forma más confiable y menos afectada por ruido.
 
-Finalmente, todos esos valores (posición del pico, media y cantidad de datos usados) se muestran en una tabla para poder analizarlos.
+Finalmente, todos esos valores (posición del pico, media, desviación, y cantidad de datos usados) se guardan y se muestran en una tabla para poder analizarlos fácilmente desde la interfaz.
 
 
-[![imagen-2025-04-04-181125000.png](https://i.postimg.cc/nLY0JMnX/imagen-2025-04-04-181125000.png)](https://postimg.cc/zLvnwzbN)
+[![imagen-2025-04-04-191032183.png](https://i.postimg.cc/g2PgB1hc/imagen-2025-04-04-191032183.png)](https://postimg.cc/fJB7V251)
 
 
 [![imagen-2025-04-04-181205571.png](https://i.postimg.cc/k4Ts2Z69/imagen-2025-04-04-181205571.png)](https://postimg.cc/qhCyY1xZ)

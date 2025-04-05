@@ -375,4 +375,11 @@ Lo cual nos arroja lo siguiente :
 
 ## Resultados y Analisis
 
+- Como se peude observar en las graficas de los datos de 800 datos desde 2000 y los 800 datos fianles , se nota una gran diferencias en los pulsos,
+  siendo notorio dos cuestiones. La primera cuestionos el numero de picos que se ve en la de 800 datos desde 2000 en el pulso se ven mas picos siendo un total de 8 picos contados pero
+  los 800 datos del final se pueden registrar 5 picos siendo un pulso menor y notando una fatiga y la segunda cuestion que nos deja ver la diferencias es el tamaño tan irregulas de los picos en el pulso como se observor en la grafica de los
+  800 datos desde los 2000 se ven que los picos se mentienen de una forma mas regular que en los 800 datos finales, esto dejandos analisar que cuando se llego a la fatiga del sujeto de pruebas se pudo observar que en algunas occaciones el sujeto intentara recuperar la fuerza pero igualmenete
+  se notaba en ese lapso de tiempo la fatiga del musculo llengando a mostrar esas irregularidad de los picos.
+
+-
    
